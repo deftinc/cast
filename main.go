@@ -18,6 +18,5 @@ package main
 import "github.com/deftinc/cast/cmd"
 
 func main() {
-
 	cmd.Execute()
 }

@@ -16,27 +16,26 @@ limitations under the License.
 package cmd
 
 import (
+	"fmt"
 	"github.com/octokit/go-octokit/octokit"
 	"github.com/spf13/cobra"
 )
 
-var DefaultLabels = []octokit.Label{
-	{Name: "In Development", Color: "030d7c"},
-	{Name: "Ready for Review", Color: "eeb916"},
-	{Name: "Review Remediation", Color: "fef2c0"},
-	{Name: "Ready for Merge", Color: "1b7c03"},
-	{Name: "Blocker", Color: "ee0701"},
-	{Name: "No Release Email", Color: "bfdadc"},
-}
-
-var labelsCmd = &cobra.Command{
-	Use:   "labels",
-	Short: "Manipulate labels on a repository",
+var reposList = &cobra.Command{
+	Use:   "list",
+	Short: "List repositories",
 	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Usage()
+		url := octokit.UserRepositoriesURL
+		repos, result := client.Repositories().All(&url, octokit.M{"type": "all"})
+		if result.HasError() {
+			fmt.Println(result.Error())
+		}
+		for _, repo := range repos {
+			fmt.Println(repo.FullName)
+		}
 	},
 }
 
 func init() {
-	rootCmd.AddCommand(labelsCmd)
+	reposCmd.AddCommand(reposList)
 }
